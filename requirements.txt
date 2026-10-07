@@ -1,0 +1,14 @@
+numpy
+pandas
+geopandas
+rasterio
+shapely
+requests
+networkx
+osmnx
+streamlit
+python-dotenv
+torch
+torchvision
+scikit-learn
+matplotlib

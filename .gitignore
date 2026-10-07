@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Node / React
+node_modules/
+dist/
+build/
+npm-debug.log*
+
+# =========================================
+# 🚨 CRITICAL: LARGE FILES EXCLUDED 🚨
+# GitHub blocks pushes > 100MB.
+# Do NOT commit these files.
+# =========================================
+
+# Raw Satellite Data (Gigabytes)
+data/raw/*.zip
+data/raw/*.SAFE/
+
+# Processed TIFFs and Masks
+data/processed/*.tiff
+data/processed/*.tif
+
+# Large Model Checkpoints
+models/*.pt
+models/*.pth
+models/*.bin
+
+# Mac/OS
+.DS_Store
