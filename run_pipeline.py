@@ -146,11 +146,21 @@ def run_routing_analysis():
     subprocess.run([sys.executable, "src/routing.py"], check=True)
     print("Phase 3 Complete!\n")
 
+def run_report_generation():
+    print("=" * 60)
+    print("  PHASE 4: AUTO-GENERATING SITUATION REPORT")
+    print("=" * 60)
+    subprocess.run([sys.executable, "src/report_generator.py"], check=True)
+    print("Phase 4 Complete!\n")
+
 if __name__ == "__main__":
     run_ai_inference()
     run_spatial_analysis()
     run_routing_analysis()
+    run_report_generation()
     print("============================================================")
     print("  ORBITALRESQ PIPELINE FINISHED SUCCESSFULLY!")
     print("  All data is ready for the dashboard.")
+    print("  Run: cd dashboard/backend && npm start")
+    print("  Run: cd dashboard/frontend && npm run dev")
     print("============================================================")

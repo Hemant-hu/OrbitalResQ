@@ -1,0 +1,54 @@
+
+================================================================================
+              ORBITALRESQ — SITUATION REPORT (SITREP)
+              Automated Satellite-Based Flood Assessment
+================================================================================
+
+EVENT:          Glacier Collapse & Flash Flood — Bhote Koshi–Trishuli Corridor, Nepal
+REPORT DATE:    2026-10-07 18:21 (UTC+5:45)
+DATA SOURCE:    Sentinel-1 SAR (Pre: 2026-08-24 | Post: 2026-09-05)
+ANALYSIS:       FloodViT AI Model + SAR Change Detection
+COVERAGE:       Center: 28.4256°N, 84.6637°E
+
+--------------------------------------------------------------------------------
+1. WHERE DID THE FLOOD HIT?
+--------------------------------------------------------------------------------
+   Total area analyzed:          5,017,600 pixels
+   Flooded area detected:       182,979 pixels (3.65%)
+   Estimated flood extent:       18.3 km²
+     - Standing water:           0.0 km² (0 px)
+     - Debris / mud deposits:    18.3 km² (182,979 px)
+
+--------------------------------------------------------------------------------
+2. WHAT WAS DAMAGED?
+--------------------------------------------------------------------------------
+   Buildings affected:           0
+   Road segments flooded:        0
+
+   NOTE: Damage estimates are based on spatial intersection of the AI-generated
+   flood mask with pre-event OpenStreetMap building footprints and road geometries
+   (snapshot date: 2026-07-27). Actual structural damage may vary.
+
+--------------------------------------------------------------------------------
+3. WHO IS CUT OFF?
+--------------------------------------------------------------------------------
+   Villages with no road access: 0
+
+   Analysis method: Road segments intersecting the flood mask were removed from
+   the pre-event road network graph. Villages that lost all paths to the nearest
+   town or hospital were flagged as "cut off."
+
+--------------------------------------------------------------------------------
+LIMITATIONS
+--------------------------------------------------------------------------------
+   • Sentinel-1 revisit time is 6–12 days; this report reflects conditions as of
+     the post-event acquisition date (2026-09-05), not real-time.
+   • Cloud-free Sentinel-2 optical imagery was not available for this pass.
+   • OpenStreetMap coverage in rural Nepal is incomplete; unmapped structures
+     are not included in the damage count.
+   • The FloodViT model was applied to a center crop of the full scene due to
+     CPU memory constraints. Areas outside the crop use a classical SAR baseline.
+
+================================================================================
+   Generated automatically by OrbitalResQ | Data: ESA Copernicus, OSM
+================================================================================

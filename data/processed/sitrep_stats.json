@@ -1,0 +1,24 @@
+{
+  "pre_date": "2026-08-24",
+  "post_date": "2026-09-05",
+  "bbox": [
+    83.26117116809233,
+    27.46151101022659,
+    86.06630903525176,
+    29.38974975417291
+  ],
+  "center_lat": 28.4256,
+  "center_lon": 84.6637,
+  "total_pixels": 5017600,
+  "flooded_pixels": 182979,
+  "flood_percent": 3.65,
+  "flood_area_km2": 18.3,
+  "water_pixels": 0,
+  "debris_pixels": 182979,
+  "water_area_km2": 0.0,
+  "debris_area_km2": 18.3,
+  "damaged_buildings": 0,
+  "damaged_roads": 0,
+  "cutoff_villages": 0,
+  "cutoff_village_names": []
+}
