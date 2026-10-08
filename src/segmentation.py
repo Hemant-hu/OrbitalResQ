@@ -160,6 +160,54 @@ def save_flood_mask(mask_data, reference_profile, output_path, num_bands=1):
     return output_path
 
 
+
+
+
+# ──────────────────────────────────────────────
+# MULTI-MODAL SENSOR FUSION (Sentinel-1 + Sentinel-2)
+# ──────────────────────────────────────────────
+def compute_optical_indices(green_band, red_band, nir_band):
+    """
+    Computes NDWI for Water and NDDI-like index for Debris/Mud.
+    Returns binary masks for optical water and optical debris.
+    """
+    print("  Calculating Sentinel-2 Optical Indices (NDWI/NDDI)...")
+    eps = 1e-8
+    
+    # NDWI (Water) = (Green - NIR) / (Green + NIR)
+    ndwi = (green_band - nir_band) / (green_band + nir_band + eps)
+    optical_water = (ndwi > 0.1).astype(np.uint8)
+    
+    # Debris index (Simplified NDDI/Mud index)
+    nddi = (green_band - red_band) / (green_band + red_band + eps)
+    optical_debris = ((nddi > 0.05) & (nir_band > 1000)).astype(np.uint8) # High reflectance + soil signature
+    
+    return optical_water, optical_debris
+
+def fuse_masks(sar_class_mask, optical_water, optical_debris, cloud_cover_percent):
+    """
+    Fuses Sentinel-1 AI Mask with Sentinel-2 Optical Mask.
+    If cloud cover is > 60%, trusts SAR completely.
+    Otherwise, uses Optical to enhance the SAR mask.
+    """
+    fused_mask = sar_class_mask.copy()
+    
+    if cloud_cover_percent > 60:
+        print(f"  [Fusion] High cloud cover ({cloud_cover_percent}%). Trusting Sentinel-1 Radar completely.")
+        return fused_mask
+        
+    print(f"  [Fusion] Clear sky ({cloud_cover_percent}% clouds). Fusing S1 AI with S2 Optical data.")
+    
+    # 1: Water, 2: Debris
+    # Enhance water detection where optical strongly agrees, or finds new water
+    fused_mask[(optical_water == 1) & (fused_mask == 0)] = 1
+    
+    # Enhance debris detection
+    fused_mask[(optical_debris == 1) & (fused_mask == 0)] = 2
+    
+    return fused_mask
+
+
 # ──────────────────────────────────────────────
 # SIMPLE CHANGE DETECTION (Fallback / Baseline)
 # ──────────────────────────────────────────────

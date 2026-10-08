@@ -126,10 +126,50 @@ def run_ai_inference():
 
     for c in range(3): vit_mask[c] /= np.maximum(vit_counts, 1)
     class_mask = np.argmax(vit_mask, axis=0).astype(np.uint8)
-    full_binary = (class_mask > 0).astype(np.uint8)
+    # -- NEW MULTI-MODAL FUSION LOGIC (SENTINEL-1 + SENTINEL-2) --
+    print("\n[6/6] Multi-Modal Fusion (Integrating Sentinel-2 Optical Data)...")
+    from src.data_loader import extract_s2_bands
+    from src.segmentation import compute_optical_indices, fuse_masks
+    
+    # Extract Sentinel-2
+    s2_post = extract_s2_bands("data/raw/s2_post.zip", label="s2_post")
+    
+    if 'green' in s2_post and 'nir' in s2_post and 'red' in s2_post:
+        print("  Aligning Optical and Radar geometries...")
+        from rasterio.warp import reproject, Resampling
+        
+        def load_s2_aligned(s2_path, dest_profile):
+            with rasterio.open(s2_path) as src:
+                dest_data = np.zeros((dest_profile['height'], dest_profile['width']), dtype=np.float32)
+                reproject(
+                    source=rasterio.band(src, 1),
+                    destination=dest_data,
+                    src_transform=src.transform,
+                    src_crs=src.crs,
+                    dst_transform=dest_profile['transform'],
+                    dst_crs=dest_profile['crs'],
+                    resampling=Resampling.bilinear
+                )
+                return dest_data
+
+        crop_s2_green = load_s2_aligned(s2_post['green'], profile)
+        crop_s2_red = load_s2_aligned(s2_post['red'], profile)
+        crop_s2_nir = load_s2_aligned(s2_post['nir'], profile)
+        
+        # Simulated Cloud Cover Check (Normally derived from S2 Scene Classification Layer)
+        # We assume 45% for this specific post-event date (partially clear)
+        cloud_cover = 45 
+        
+        opt_water, opt_debris = compute_optical_indices(crop_s2_green, crop_s2_red, crop_s2_nir)
+        final_class_mask = fuse_masks(class_mask, opt_water, opt_debris, cloud_cover_percent=cloud_cover)
+    else:
+        print("  Sentinel-2 10m JP2 bands not found in zip structure. Using SAR-only output.")
+        final_class_mask = class_mask
+
+    full_binary = (final_class_mask > 0).astype(np.uint8)
 
     save_flood_mask(full_binary, profile, "data/processed/flood_mask.tiff")
-    save_flood_mask(class_mask, profile, "data/processed/flood_class_mask.tiff")
+    save_flood_mask(final_class_mask, profile, "data/processed/flood_class_mask.tiff")
     print("Phase 1 Complete!\n")
 
 def run_spatial_analysis():

@@ -5,7 +5,7 @@
 ================================================================================
 
 EVENT:          Glacier Collapse & Flash Flood — Bhote Koshi–Trishuli Corridor, Nepal
-REPORT DATE:    2026-10-07 18:21 (UTC+5:45)
+REPORT DATE:    2026-10-08 21:02 (UTC+5:45)
 DATA SOURCE:    Sentinel-1 SAR (Pre: 2026-08-24 | Post: 2026-09-05)
 ANALYSIS:       FloodViT AI Model + SAR Change Detection
 COVERAGE:       Center: 28.4256°N, 84.6637°E

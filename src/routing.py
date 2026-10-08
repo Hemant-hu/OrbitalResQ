@@ -71,6 +71,11 @@ def main():
 
     print(f"  Found {len(pois)} critical locations.")
 
+    if 'place' not in pois.columns:
+        pois['place'] = None
+    if 'amenity' not in pois.columns:
+        pois['amenity'] = None
+
     is_hub = pois['place'].isin(['town', 'city']) | pois['amenity'].isin(['hospital', 'clinic'])
     is_village = pois['place'] == 'village'
     

@@ -35,6 +35,30 @@ def extract_s1_bands(zip_path, extract_dir="data/processed", label="s1"):
                 extracted_files['vh'] = target
     return extracted_files
 
+def extract_s2_bands(zip_path, extract_dir="data/processed", label="s2"):
+    """Extract Sentinel-2 Green (B03) and NIR (B08) bands for NDWI/Optical analysis."""
+    os.makedirs(extract_dir, exist_ok=True)
+    extracted_files = {}
+    with zipfile.ZipFile(zip_path, 'r') as z:
+        for file in z.namelist():
+            # Look for 10m resolution bands (B03=Green, B08=NIR, B04=Red)
+            if file.endswith('B03_10m.jp2') or (file.endswith('B03.jp2') and '10m' not in file):
+                target = os.path.join(extract_dir, f"{label}_B03.jp2")
+                if not os.path.exists(target):
+                    with open(target, 'wb') as f_out: f_out.write(z.read(file))
+                extracted_files['green'] = target
+            elif file.endswith('B08_10m.jp2') or (file.endswith('B08.jp2') and '10m' not in file):
+                target = os.path.join(extract_dir, f"{label}_B08.jp2")
+                if not os.path.exists(target):
+                    with open(target, 'wb') as f_out: f_out.write(z.read(file))
+                extracted_files['nir'] = target
+            elif file.endswith('B04_10m.jp2') or (file.endswith('B04.jp2') and '10m' not in file):
+                target = os.path.join(extract_dir, f"{label}_B04.jp2")
+                if not os.path.exists(target):
+                    with open(target, 'wb') as f_out: f_out.write(z.read(file))
+                extracted_files['red'] = target
+    return extracted_files
+
 def get_s1_geolocation(zip_path):
     with zipfile.ZipFile(zip_path, 'r') as z:
         xml_file = [f for f in z.namelist() if 'annotation/s1d-iw-grd-vv' in f and f.endswith('.xml')][0]
